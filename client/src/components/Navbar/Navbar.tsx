@@ -8,11 +8,14 @@ export default function Navbar() {
           SocialMedia
         </Link>
         <div className="flex gap-4">
-          <Link to="/" className="text-gray-600 hover:text-gray-900">
-            Home
+          <Link to="/login" className="text-gray-600 hover:text-gray-900">
+            Login
           </Link>
-          <Link to="/dashboard" className="text-gray-600 hover:text-gray-900">
-            Dashboard
+          <Link
+            to="/register"
+            className="rounded-lg bg-blue-600 px-4 py-1.5 text-white font-medium hover:bg-blue-700 transition"
+          >
+            Register
           </Link>
         </div>
       </div>
