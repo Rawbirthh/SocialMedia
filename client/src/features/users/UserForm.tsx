@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import type { User } from './users.api';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+
 
 interface UserFormProps {
   onSubmit: (data: { name: string; email: string; password: string }) => Promise<User>;
@@ -32,47 +36,66 @@ export default function UserForm({ onSubmit }: UserFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mb-8">
-      <div>
-        <input
+    <form onSubmit={handleSubmit} className="space-y-5 mb-6">
+      {/* Name Field */}
+      <div className="space-y-2">
+        <Label htmlFor="name" className="text-zinc-300">
+          Name
+        </Label>
+        <Input
+          id="name"
           type="text"
-          placeholder="Enter name"
+          placeholder="John Doe"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          // Removed required
+          className="bg-transparent border-zinc-700 text-white placeholder:text-zinc-600 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name[0]}</p>}
+        {errors.name && <p className="mt-1 text-sm text-red-400">{errors.name[0]}</p>}
       </div>
 
-      <div>
-        <input
-          type="text"
-          placeholder="Enter email"
+      {/* Email Field */}
+      <div className="space-y-2">
+        <Label htmlFor="email" className="text-zinc-300">
+          Email
+        </Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          // Removed required
+          className="bg-transparent border-zinc-700 text-white placeholder:text-zinc-600 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
         />
-        {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email[0]}</p>}
+        {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email[0]}</p>}
       </div>
 
-      <div>
-        <input
+      {/* Password Field */}
+      <div className="space-y-2">
+        <Label htmlFor="password" className="text-zinc-300">
+          Password
+        </Label>
+        <Input
+          id="password"
           type="password"
-          placeholder="Enter password"
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          // Removed required
+          className="bg-transparent border-zinc-700 text-white placeholder:text-zinc-600 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
         />
-        {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password[0]}</p>}
+        {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password[0]}</p>}
       </div>
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full rounded-lg bg-blue-600 py-2 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+      {/* Submit Button */}
+      <Button 
+        type="submit" 
+        disabled={submitting} 
+        className="w-full bg-white text-zinc-900 hover:bg-zinc-200"
       >
-        {submitting ? 'Adding...' : 'Add User'}
-      </button>
+        {submitting ? 'Creating...' : 'Create Account'}
+      </Button>
     </form>
   );
 }
