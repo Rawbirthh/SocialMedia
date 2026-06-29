@@ -8,6 +8,8 @@ export default function Sidebar() {
   const links = [
     { to: '/dashboard', label: 'Dashboard' },
     { to: '/users', label: 'Users' },
+    { to: '/roles', label: 'Roles' },
+    { to: '/permissions', label: 'Permissions' },
   ];
 
   return (
@@ -17,7 +19,7 @@ export default function Sidebar() {
           to="/"
           className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
         >
-          SocialMedia
+          Job Portal
         </Link>
       </div>
 

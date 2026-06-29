@@ -5,6 +5,8 @@ export interface User {
   name: string;
   email: string;
   password?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const getUsers = async (): Promise<User[]> => {
@@ -12,7 +14,7 @@ export const getUsers = async (): Promise<User[]> => {
   return response.data;
 };
 
-export const createUser = async (data: Omit<User, 'id'>): Promise<User> => {
+export const createUser = async (data: { name: string; email: string; password: string }): Promise<User> => {
   const response = await api.post<User>('/users', data);
   return response.data;
 };

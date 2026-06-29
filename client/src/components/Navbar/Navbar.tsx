@@ -15,7 +15,7 @@ export default function Navbar() {
           to="/" 
           className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
         >
-          SocialMedia
+          Job Portal
         </Link>
 
         <div className="flex gap-2 sm:gap-4 items-center">

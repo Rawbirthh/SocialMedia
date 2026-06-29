@@ -23,7 +23,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-zinc-400 sm:text-xl">
-            Join SocialMedia today. Discover what's happening around the world, connect with people, and share your favorite moments.
+            Join Job Portal today. Discover what's happening around the world, connect with people, and share your favorite moments.
           </p>
 
           {/* Buttons */}

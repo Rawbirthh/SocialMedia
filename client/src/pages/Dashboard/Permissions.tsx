@@ -1,26 +1,32 @@
 import { useState } from 'react';
-import { useUsers } from '../../features/users/useUsers';
-import UserForm from '../../features/users/UserForm';
+import { usePermissions } from '../../features/permissions/usePermissions';
+import PermissionForm from '../../features/permissions/PermissionForm';
 import DataTable from '../../components/ui/data-table';
 import type { DataTableColumn } from '../../components/ui/data-table';
-import type { User } from '../../features/users/users.api';
+import type { Permission } from '../../features/permissions/permissions.api';
 import { formatDate } from '../../utils/formatDate';
 
-export default function Users() {
-  const { users, loading, addUser, updateUser, deleteUser } = useUsers();
+export default function Permissions() {
+  const { permissions, loading, addPermission, updatePermission, deletePermission } = usePermissions();
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [editData, setEditData] = useState<{ name: string; description: string } | null>(null);
 
-  const handleEdit = (user: User) => {
-    setEditingId(user.id);
+  const handleEdit = (permission: Permission) => {
+    setEditingId(permission.id);
+    setEditData({
+      name: permission.name,
+      description: permission.description ?? '',
+    });
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
+    setEditData(null);
   };
 
-  const columns: DataTableColumn<User>[] = [
+  const columns: DataTableColumn<Permission>[] = [
     { key: 'name', header: 'Name' },
-    { key: 'email', header: 'Email' },
+    { key: 'description', header: 'Description', render: (p) => p.description ?? '-' },
     {
       key: 'createdAt',
       header: 'Date Created',
@@ -38,18 +44,20 @@ export default function Users() {
       {/* Left: Form */}
       <div className="w-80 shrink-0">
         <h2 className="text-lg font-semibold text-white mb-4">
-          {editingId ? 'Edit User' : 'New User'}
+          {editingId ? 'Edit Permission' : 'New Permission'}
         </h2>
-        <UserForm
-          onSubmit={(data) => {
+        <PermissionForm
+          onSubmit={async (data) => {
             if (editingId) {
-              return updateUser({ id: editingId, data }).then((result) => {
-                setEditingId(null);
-                return result;
-              });
+              await updatePermission({ id: editingId, data });
+              setEditingId(null);
+              setEditData(null);
+            } else {
+              await addPermission(data);
             }
-            return addUser(data);
           }}
+          initialData={editData ?? undefined}
+          submitLabel={editingId ? 'Save Changes' : 'Create Permission'}
         />
         {editingId && (
           <button
@@ -63,23 +71,23 @@ export default function Users() {
 
       {/* Right: Table */}
       <div className="flex-1 min-w-0">
-        <h2 className="text-lg font-semibold text-white mb-4">Users</h2>
+        <h2 className="text-lg font-semibold text-white mb-4">Permissions</h2>
         <DataTable
-          data={users}
+          data={permissions}
           columns={columns}
           loading={loading}
-          searchPlaceholder="Search users..."
-          searchKeys={['name', 'email']}
-          actions={(user) => (
+          searchPlaceholder="Search permissions..."
+          searchKeys={['name', 'description']}
+          actions={(permission) => (
             <div className="flex gap-2 justify-end">
               <button
-                onClick={() => handleEdit(user)}
+                onClick={() => handleEdit(permission)}
                 className="rounded-lg bg-zinc-800 px-3 py-1.5 text-xs text-zinc-300 hover:bg-zinc-700 hover:text-white"
               >
                 Edit
               </button>
               <button
-                onClick={() => deleteUser(user.id)}
+                onClick={() => deletePermission(permission.id)}
                 className="rounded-lg bg-red-900/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-900/50"
               >
                 Delete
