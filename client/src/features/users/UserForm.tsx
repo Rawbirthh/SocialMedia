@@ -3,6 +3,7 @@ import type { User } from './users.api';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
+import { useFormState } from '../../hooks/useFormState';
 
 
 interface UserFormProps {
@@ -15,8 +16,6 @@ export default function UserForm({ onSubmit, initialData, submitLabel = 'Create 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     if (initialData) {
@@ -29,25 +28,18 @@ export default function UserForm({ onSubmit, initialData, submitLabel = 'Create 
     setPassword('');
   }, [initialData]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setErrors({});
-    try {
-      await onSubmit({ name, email, password });
+  const { submitting, errors, handleSubmit: handleFormSubmit } = useFormState({
+    onSuccess: () => {
       if (!initialData) {
         setName('');
         setEmail('');
       }
       setPassword('');
-    } catch (err: unknown) {
-      const axiosErr = err as { response?: { data?: { error?: Record<string, string[]> } } };
-      if (axiosErr.response?.data?.error) {
-        setErrors(axiosErr.response.data.error);
-      }
-    } finally {
-      setSubmitting(false);
-    }
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    handleFormSubmit(e, () => onSubmit({ name, email, password }));
   };
 
   return (

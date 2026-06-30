@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
+import { useFormState } from '../../hooks/useFormState';
 import type { CreateRoleData } from './roles.api';
 import type { Permission } from '../permissions/permissions.api';
 
@@ -20,8 +21,6 @@ export default function RoleForm({ onSubmit, permissions, initialData, submitLab
   const [name, setName] = useState(initialData?.name ?? '');
   const [description, setDescription] = useState(initialData?.description ?? '');
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<number[]>(initialData?.permissionIds ?? []);
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     if (initialData) {
@@ -35,31 +34,24 @@ export default function RoleForm({ onSubmit, permissions, initialData, submitLab
     }
   }, [initialData]);
 
+  const { submitting, errors, handleSubmit: handleFormSubmit } = useFormState({
+    onSuccess: () => {
+      if (!initialData) {
+        setName('');
+        setDescription('');
+        setSelectedPermissionIds([]);
+      }
+    },
+  });
+
   const togglePermission = (id: number) => {
     setSelectedPermissionIds((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setErrors({});
-    try {
-      await onSubmit({ name, description: description || undefined, permissionIds: selectedPermissionIds });
-      if (!initialData) {
-        setName('');
-        setDescription('');
-        setSelectedPermissionIds([]);
-      }
-    } catch (err: unknown) {
-      const axiosErr = err as { response?: { data?: { error?: Record<string, string[]> } } };
-      if (axiosErr.response?.data?.error) {
-        setErrors(axiosErr.response.data.error);
-      }
-    } finally {
-      setSubmitting(false);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    handleFormSubmit(e, () => onSubmit({ name, description: description || undefined, permissionIds: selectedPermissionIds }));
   };
 
   return (
