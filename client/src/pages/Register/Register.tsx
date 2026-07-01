@@ -23,7 +23,7 @@ export default function Register() {
         </div>
 
         {/* Your existing form component */}
-        <UserForm onSubmit={addUser} />
+        <UserForm onSubmit={addUser} roles={[]} />
 
         <p className="mt-6 text-center text-sm text-zinc-400">
           Already have an account?{' '}

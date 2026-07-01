@@ -17,7 +17,7 @@ export const useUsers = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: { name: string; email: string } }) =>
+    mutationFn: ({ id, data }: { id: number; data: { name?: string; email?: string; roleIds?: number[] } }) =>
       updateUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });

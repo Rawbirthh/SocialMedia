@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useUsers } from '../../features/users/useUsers';
+import { useRoles } from '../../features/roles/useRoles';
 import UserForm from '../../features/users/UserForm';
 import DataTable from '../../components/ui/data-table';
 import type { DataTableColumn } from '../../components/ui/data-table';
@@ -8,12 +9,17 @@ import { formatDate } from '../../utils/formatDate';
 
 export default function Users() {
   const { users, loading, addUser, updateUser, deleteUser } = useUsers();
+  const { roles } = useRoles();
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<{ name: string; email: string } | null>(null);
+  const [editData, setEditData] = useState<{ name: string; email: string; roleIds?: number[] } | null>(null);
 
   const handleEdit = (user: User) => {
     setEditingId(user.id);
-    setEditData({ name: user.name, email: user.email });
+    setEditData({
+      name: user.name,
+      email: user.email,
+      roleIds: user.roles.map((ur) => ur.roleId),
+    });
   };
 
   const handleCancelEdit = () => {
@@ -24,6 +30,23 @@ export default function Users() {
   const columns: DataTableColumn<User>[] = [
     { key: 'name', header: 'Name' },
     { key: 'email', header: 'Email' },
+    {
+      key: 'roles',
+      header: 'Roles',
+      render: (u) => (
+        <div className="flex flex-wrap gap-1">
+          {u.roles.length > 0 ? (
+            u.roles.map((ur) => (
+              <span key={ur.id} className="rounded bg-blue-600/20 px-1.5 py-0.5 text-xs text-blue-400">
+                {ur.role.name}
+              </span>
+            ))
+          ) : (
+            <span className="text-xs text-zinc-500">No roles</span>
+          )}
+        </div>
+      ),
+    },
     {
       key: 'createdAt',
       header: 'Date Created',
@@ -54,6 +77,7 @@ export default function Users() {
             }
             return addUser(data);
           }}
+          roles={roles}
           initialData={editData ?? undefined}
           submitLabel={editingId ? 'Save Changes' : 'Create Account'}
         />
