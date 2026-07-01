@@ -1,16 +1,26 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../features/auth/authStore';
 
+interface SidebarLink {
+  to: string;
+  label: string;
+  roles?: string[];
+}
+
+const links: SidebarLink[] = [
+  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/users', label: 'Users', roles: ['Admin'] },
+  { to: '/roles', label: 'Roles', roles: ['Admin'] },
+  { to: '/permissions', label: 'Permissions', roles: ['Admin'] },
+];
+
 export default function Sidebar() {
   const { user, logout } = useAuthStore();
   const location = useLocation();
 
-  const links = [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/users', label: 'Users' },
-    { to: '/roles', label: 'Roles' },
-    { to: '/permissions', label: 'Permissions' },
-  ];
+  const visibleLinks = links.filter(
+    (link) => !link.roles || link.roles.some((role) => user?.roles?.includes(role))
+  );
 
   return (
     <aside className="w-64 min-h-screen bg-zinc-950 border-r border-zinc-800 flex flex-col">
@@ -24,7 +34,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        {links.map((link) => (
+        {visibleLinks.map((link) => (
           <Link
             key={link.to}
             to={link.to}

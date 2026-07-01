@@ -15,6 +15,10 @@ export const getUserByEmail = (email: string) => {
   return userRepository.findUserByEmail(email);
 };
 
+export const getUserByEmailWithRoles = (email: string) => {
+  return userRepository.findUserByEmailWithRoles(email);
+};
+
 export const createUser = async (data: CreateUserInput) => {
   const existing = await userRepository.findUserByEmail(data.email);
   if (existing) {

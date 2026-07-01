@@ -18,6 +18,13 @@ export const findUserByEmail = (email: string) => {
   return prisma.user.findUnique({ where: { email } });
 };
 
+export const findUserByEmailWithRoles = (email: string) => {
+  return prisma.user.findUnique({
+    where: { email },
+    include: { roles: { include: { role: true } } },
+  });
+};
+
 export const createUser = (data: CreateUserInput) => {
   const { roleIds, ...userData } = data;
   const createData: Parameters<typeof prisma.user.create>[0]['data'] = {
